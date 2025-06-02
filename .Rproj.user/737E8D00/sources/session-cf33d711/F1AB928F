@@ -1,0 +1,26 @@
+{
+    "id": "F1AB928F",
+    "path": "/cloud/project/scripts/2_limpeza_disputa.R",
+    "project_path": "scripts/2_limpeza_disputa.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1748880062735.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "86,32",
+        "scrollLine": "78"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1748881427,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1748881427690,
+    "read_only": false,
+    "read_only_alternatives": []
+}

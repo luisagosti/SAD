@@ -1,0 +1,59 @@
+library(rvest)
+library(tidyverse)
+library(httr)
+library(jsonlite)
+
+dir.create("data_raw", showWarnings = FALSE)
+
+url_bike_systems <- "https://en.wikipedia.org/wiki/List_of_bicycle-sharing_systems"
+page <- read_html(url_bike_systems)
+
+bike_table <- page %>%
+  html_node("table.wikitable") %>%
+  html_table(fill = TRUE)
+
+write_csv(bike_table, "data_raw/SeoulBikeData.csv")
+
+
+if (file.exists("data_raw/worldcities.csv")) {
+  message("raw_worldcities.csv encontrado em data_raw/.")
+} else {
+  message("⚠️ Coloque raw_worldcities.csv (SimpleMaps ou similar) em data_raw/.")
+}
+
+
+api_key <- "2810b3593651a930239d07e75e3409f7" 
+
+
+cidades <- c("Seoul,KR", "New York,US", "Paris,FR", "Suzhou,CN", "London,UK")
+
+get_forecast <- function(city) {
+  url <- paste0(
+    "https://api.openweathermap.org/data/2.5/forecast?q=",
+    URLencode(city),
+    "&units=metric&appid=", api_key
+  )
+  resp <- GET(url)
+  data <- fromJSON(rawToChar(resp$content), flatten = TRUE)
+  df <- data$list %>%
+    as_tibble() %>%
+    select(
+      dt_txt,
+      main.temp, main.humidity,
+      wind.speed, visibility,
+      clouds.all,
+      weather
+    ) %>%
+    mutate(city = city)
+  return(df)
+}
+
+all_forecasts <- map_dfr(cidades, get_forecast)
+write_csv(all_forecasts, "data_raw/raw_cities_weather_forecast.csv")
+
+
+if (file.exists("data_raw/SeoulBikeData.csv")) {
+  message("raw_seoul_bike_sharing.csv encontrado em data_raw/.")
+} else {
+  message("⚠️ Coloque raw_seoul_bike_sharing.csv em data_raw/.")
+}
