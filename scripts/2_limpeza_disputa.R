@@ -66,13 +66,13 @@ write_csv(cw_clean, "data_clean/cities_weather_clean.csv")
 # 2.4. Seoul Bike Sharing (raw_seoul_bike_sharing.csv)
 # ----------------------------------------------------------------------------
 # Read as raw lines to detect encoding issues
-raw_lines <- readLines("data_raw/raw_seoul_bike_sharing.csv", encoding = "latin1", warn = FALSE)
+#raw_lines <- readLines("data_raw/raw_seoul_bike_sharing.csv", encoding = "latin1", warn = FALSE)
 
 # Remove any invalid characters
-clean_lines <- iconv(raw_lines, from = "latin1", to = "UTF-8", sub = "")
+#clean_lines <- iconv(raw_lines, from = "latin1", to = "UTF-8", sub = "")
 
 # Write temporary fixed file
-writeLines(clean_lines, "data_raw/seoul_clean_temp.csv")
+#writeLines(clean_lines, "data_raw/seoul_clean_temp.csv")
 
 # Now read the cleaned CSV
 seoul_raw <- read_csv("data_raw/seoul_clean_temp.csv")
@@ -80,21 +80,17 @@ seoul_raw <- read_csv("data_raw/seoul_clean_temp.csv")
 # Continue cleaning
 seoul_clean <- seoul_raw %>%
   clean_names() %>%
+  rename_with(~ str_replace_all(., "[^a-z0-9]+", "_")) %>%
   rename(
-    date = date,
-    hour = hour,
-    rented_bike_count = rented_bike_count,
     temperature = temperature_c,
-    humidity = humidity_,
+    humidity = humidity,
     wind_speed = wind_speed_m_s,
     visibility = visibility_10m,
     dew_point_temperature = dew_point_temperature_c,
     solar_radiation = solar_radiation_mj_m2,
     precipitation = rainfall_mm,
     snow_fall = snowfall_cm,
-    season = seasons,
-    holiday = holiday,
-    functioning_day = functioning_day
+    season = seasons
   ) %>%
   mutate(
     date = dmy(date),
@@ -103,8 +99,10 @@ seoul_clean <- seoul_raw %>%
     holiday = if_else(holiday == "Holiday", 1, 0),
     functioning_day = if_else(functioning_day == "Yes", 1, 0)
   ) %>%
-  drop_na(temperature, humidity, wind_speed, visibility,
-          dew_point_temperature, solar_radiation, precipitation, snow_fall)
+  drop_na(
+    temperature, humidity, wind_speed, visibility,
+    dew_point_temperature, solar_radiation, precipitation, snow_fall
+  )
 
 
 write_csv(seoul_clean, "data_clean/seoul_bike_clean.csv")

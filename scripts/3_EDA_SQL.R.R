@@ -131,7 +131,6 @@ print(res9)
 # 13. Tarefa 10: Total de bicicletas em Seul + info da cidade
 res10 <- dbGetQuery(con, "
   SELECT b.city AS city_bike, b.country AS country_bike,
-         b.number_of_bikes,
          w.city AS city_world, w.country AS country_world,
          w.lat, w.lng, w.population
   FROM bike_systems b
@@ -141,22 +140,24 @@ res10 <- dbGetQuery(con, "
   WHERE LOWER(b.city) = 'seoul'
     AND LOWER(b.country) = 'south korea';
 ")
-print("Tarefa 10: Total de bicicletas e dados de Seul")
+print("Tarefa 10: Dados de Seul (sem número de bicicletas)")
 print(res10)
+
 
 # 14. Tarefa 11: Cidades com número de bikes entre 15000 e 20000
 res11 <- dbGetQuery(con, "
-  SELECT b.city, b.country, b.number_of_bikes,
+  SELECT b.city, b.country,
          w.lat, w.lng, w.population
   FROM bike_systems b
   JOIN worldcities w
     ON LOWER(b.city) = LOWER(w.city)
    AND LOWER(b.country) = LOWER(w.country)
-  WHERE b.number_of_bikes BETWEEN 15000 AND 20000
-  ORDER BY b.number_of_bikes DESC;
+  WHERE b.discontinued IS NULL -- sistemas ativos
+  ORDER BY b.city;
 ")
-print("Tarefa 11: Cidades com número de bikes entre 15000 e 20000")
+print("Tarefa 11: Cidades com sistemas de bike-sharing ativos")
 print(res11)
+
 
 # 15. Fechar conexão
 dbDisconnect(con)
