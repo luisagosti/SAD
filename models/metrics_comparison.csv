@@ -1,0 +1,10 @@
+modelo,.metric,.estimate
+Linear_Meteo,rmse,490.7139535820384
+Linear_Meteo,rsq,0.4008274929524291
+Linear_Meteo,mae,362.8900095676616
+Linear_DataHora,rmse,450.40775563715374
+Linear_DataHora,rsq,0.4960600012212961
+Linear_DataHora,mae,330.963318656809
+Glmnet_Meteo,rmse,490.1938098347627
+Glmnet_Meteo,rsq,0.4020722088313975
+Glmnet_Meteo,mae,361.9266248653112
