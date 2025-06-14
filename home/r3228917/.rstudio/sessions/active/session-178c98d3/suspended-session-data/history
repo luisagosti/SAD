@@ -1,0 +1,357 @@
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/3_EDA_SQL.R.R", echo=TRUE)
+source("/cloud/project/scripts/3_EDA_SQL.R.R", echo=TRUE)
+source("/cloud/project/scripts/3_EDA_SQL.R.R", echo=TRUE)
+source("/cloud/project/scripts/3_EDA_SQL.R.R", echo=TRUE)
+source("/cloud/project/scripts/3_EDA_SQL.R.R", echo=TRUE)
+source("/cloud/project/scripts/3_EDA_SQL.R.R", echo=TRUE)
+git
+# 14. Tarefa 11: Cidades com número de bikes entre 15000 e 20000
+res11 <- dbGetQuery(con, "
+SELECT b.city, b.country,
+w.lat, w.lng, w.population
+FROM bike_systems b
+JOIN worldcities w
+ON LOWER(b.city) = LOWER(w.city)
+AND LOWER(b.country) = LOWER(w.country)
+WHERE b.discontinued IS NULL -- sistemas ativos
+ORDER BY b.city;
+")
+p8 <- t8_plot %>%
+ggplot(aes(x = season, y = media_alug)) +
+geom_col(fill = "skyblue") +
+geom_errorbar(aes(ymin = min_alug, ymax = max_alug), width = 0.2) +
+geom_point(aes(y = sd_alug), color = "red", size = 3) +
+labs(
+title = "Média, Mínimo, Máximo e Desvio Padrão de Aluguéis por Estação",
+x = "Estação",
+y = "Aluguéis (média ± erro; ponto vermelho = desvio padrão)"
+) +
+theme_minimal()
+source("/cloud/project/scripts/4_EDA_ggplot.R", echo=TRUE)
+source("/cloud/project/scripts/4_EDA_ggplot.R", echo=TRUE)
+source("/cloud/project/scripts/4_EDA_ggplot.R", echo=TRUE)
+# ----------------------------------------------------------------------------
+# 2.2. World Cities (raw_worldcities.csv)
+# ----------------------------------------------------------------------------
+wc_raw <- read_csv("data_raw/raw_worldcities.csv")
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/4_EDA_ggplot.R", echo=TRUE)
+source("scripts/3_EDA_SQL.R", echo = TRUE)
+source("scripts/3_EDA_SQL.R", echo = TRUE)
+# Tarefa 10 - Total de bicicletas e informações de Seul (join bike_systems + worldcities)
+t10 <- dbGetQuery(con, "
+SELECT b.city AS city_bike,
+b.country AS country_bike,
+b.number_of_bikes,
+w.city AS city_world,
+w.country AS country_world,
+w.lat,
+w.lng,
+w.population
+FROM bike_systems b
+JOIN worldcities w
+ON LOWER(b.city) = LOWER(w.city)
+AND LOWER(b.country) = LOWER(w.country)
+WHERE LOWER(b.city) = 'seoul'
+AND LOWER(b.country) = 'south korea';
+")
+# Tarefa 11 - Cidades com escala de bicicletas entre 15000 e 20000
+t11 <- dbGetQuery(con, "
+SELECT b.city,
+b.country,
+b.number_of_bikes,
+w.lat,
+w.lng,
+w.population
+FROM bike_systems b
+JOIN worldcities w
+ON LOWER(b.city) = LOWER(w.city)
+AND LOWER(b.country) = LOWER(w.country)
+WHERE b.number_of_bikes BETWEEN 15000 AND 20000
+ORDER BY b.number_of_bikes DESC;
+")
+# Desconectar após consultas
+dbDisconnect(con)
+# 15. Fechar conexão
+dbDisconnect(con)
+# ------------------------------------------------------------------------------------
+# Fim do script de limpeza/disputa
+# ------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------
+# 4. Exibir rapidamente no console (opcional)
+# ------------------------------------------------------------------------------------
+print("=== Tarefa 1 ==="); print(t1)
+print("=== Tarefa 2 ==="); print(t2)
+# ------------------------------------------------------------------------------------
+# Fim do script de limpeza/disputa
+# ------------------------------------------------------------------------------------
+print("=== Tarefa 3 ==="); print(t3)
+# ---- Plot para Tarefa 7: Top 10 season+hour por alugueis médios ----
+# Usar t7 para gráfico de barras horizontais
+p7 <- t7 %>%
+mutate(season_hour = paste0(season, " - ", hour)) %>%
+arrange(alugueis_medios) %>%
+ggplot(aes(x = alugueis_medios, y = fct_reorder(season_hour, alugueis_medios))) +
+geom_col(fill = "steelblue") +
+labs(
+title = "Top 10 combinações Estação + Hora por Média de Aluguéis",
+x = "Aluguéis Médios",
+y = "Estação - Hora"
+) +
+theme_minimal()
+ggsave("figures/tarefa07_top10_season_hour.png", p7, width = 8, height = 5)
+No
+# ---- Plot para Tarefa 8: Estatísticas de alugueis por estação ----
+# Mostrar média + barras de erro (min/max) - e então um ponto para desvio padrão
+# Criar data frame com média, min, max, sd a partir de t8
+t8_plot <- t8 %>%
+rename(
+media_alug = media,
+min_alug = minimo,
+max_alug = maximo,
+sd_alug = desvio_padrao
+)
+# 2. Diretórios de entrada/saída
+dir.create("data_raw", showWarnings = FALSE)
+# 3. Coleta da tabela de Bike Sharing Systems da Wikipedia
+url_bike_systems <- "https://en.wikipedia.org/wiki/List_of_bicycle-sharing_systems"
+# ------------------------------------------------------------------------------------
+# Fim do script de limpeza/disputa
+# ------------------------------------------------------------------------------------
+p8 <- t8_plot %>%
+ggplot(aes(x = season, y = media_alug)) +
+geom_col(fill = "skyblue") +
+geom_errorbar(aes(ymin = min_alug, ymax = max_alug), width = 0.2) +
+geom_point(aes(y = sd_alug), color = "red", size = 3) +
+labs(
+title = "Média, Mínimo, Máximo e Desvio Padrão de Aluguéis por Estação",
+x = "Estação",
+y = "Aluguéis (média ± erro; ponto vermelho = desvio padrão)"
+) +
+theme_minimal()
+# ====================================================================================
+# File: scripts/4_EDA_ggplot.R
+# Description: Análise exploratória com SQL (DBI) e visualizações com ggplot2
+# ====================================================================================
+# 1. Carregar pacotes necessários
+library(DBI)
+library(RSQLite)
+library(tidyverse)
+library(lubridate)
+# 2. Conectar ao banco SQLite previamente criado em scripts/3_EDA_SQL.R
+con <- dbConnect(RSQLite::SQLite(), "projeto_sad.sqlite")
+# ------------------------------------------------------------------------------------
+# 3. Executar consultas SQL para as Tarefas 1–11 e armazenar resultados em data frames
+# ------------------------------------------------------------------------------------
+# Tarefa 1 - Contagem de Registos no conjunto seoul_bike_sharing
+t1 <- dbGetQuery(con, "
+SELECT COUNT(*) AS total_registros
+FROM seoul_bike;
+")
+# Tarefa 2 - Horas com rented_bike_count ≠ 0
+t2 <- dbGetQuery(con, "
+SELECT COUNT(*) AS horas_com_aluguel
+FROM seoul_bike
+WHERE rented_bike_count > 0;
+")
+# Tarefa 3 - Previsão do tempo para Seul nas próximas 3 horas
+t3 <- dbGetQuery(con, "
+SELECT *
+FROM cities_weather
+WHERE city LIKE 'Seoul%'
+ORDER BY datetime
+LIMIT 1;
+")
+# Tarefa 4 - Estações incluídas no conjunto seoul_bike
+t4 <- dbGetQuery(con, "
+SELECT DISTINCT season
+FROM seoul_bike;
+")
+# Tarefa 5 - Primeira e última data no conjunto seoul_bike
+t5 <- dbGetQuery(con, "
+SELECT MIN(date) AS primeira_data,
+MAX(date) AS ultima_data
+FROM seoul_bike;
+")
+# Tarefa 6 - Data/hora com máximo histórico de alugueis
+t6 <- dbGetQuery(con, "
+SELECT date, hour, rented_bike_count
+FROM seoul_bike
+WHERE rented_bike_count = (
+SELECT MAX(rented_bike_count) FROM seoul_bike
+);
+")
+# Tarefa 7 - Top 10 combinações estação+hora por média de alugueis e temperatura média
+t7 <- dbGetQuery(con, "
+SELECT season,
+hour,
+ROUND(AVG(temperature), 2) AS temp_media,
+ROUND(AVG(rented_bike_count), 2) AS alugueis_medios
+FROM seoul_bike
+GROUP BY season, hour
+ORDER BY alugueis_medios DESC
+LIMIT 10;
+")
+# Tarefa 8 - Estatísticas sazonalidade de alugueis (média, min, max, desvio padrão)
+t8 <- dbGetQuery(con, "
+SELECT season,
+ROUND(AVG(rented_bike_count), 2) AS media,
+MIN(rented_bike_count) AS minimo,
+MAX(rented_bike_count) AS maximo,
+ROUND(
+SQRT(
+AVG(rented_bike_count * rented_bike_count)
+- AVG(rented_bike_count) * AVG(rented_bike_count)
+), 2
+) AS desvio_padrao
+FROM seoul_bike
+GROUP BY season;
+")
+# Tarefa 9 - Métricas meteorológicas médias e alugueis médios por estação
+t9 <- dbGetQuery(con, "
+SELECT season,
+ROUND(AVG(temperature), 2)       AS temp_media,
+ROUND(AVG(humidity), 2)          AS hum_media,
+ROUND(AVG(wind_speed), 2)        AS vento_media,
+ROUND(AVG(visibility), 2)        AS vis_media,
+ROUND(AVG(dew_point_temperature), 2) AS dew_media,
+ROUND(AVG(solar_radiation), 2)   AS solar_media,
+ROUND(AVG(precipitation), 2)     AS precip_media,   -- em vez de rainfall
+ROUND(AVG(snow_fall), 2)         AS neve_media,     -- em vez de snowfall
+ROUND(AVG(rented_bike_count), 2) AS alugueis_media
+FROM seoul_bike
+GROUP BY season
+ORDER BY alugueis_media DESC;
+")
+# Confira os campos (colunas) da tabela bike_systems
+dbListFields(con, "bike_systems")
+# Tarefa 10 - Total de bicicletas e informações de Seul (join bike_systems + worldcities)
+t10 <- dbGetQuery(con, "
+SELECT b.city AS city_bike,
+b.country AS country_bike,
+b.number_of_bikes,
+w.city AS city_world,
+w.country AS country_world,
+w.lat,
+w.lng,
+w.population
+FROM bike_systems b
+JOIN worldcities w
+ON LOWER(b.city) = LOWER(w.city)
+AND LOWER(b.country) = LOWER(w.country)
+WHERE LOWER(b.city) = 'seoul'
+AND LOWER(b.country) = 'south korea';
+")
+page <- read_html(url_bike_systems)
+bike_table <- page %>%
+html_node("table.wikitable") %>%
+html_table(fill = TRUE)
+write_csv(bike_table, "data_raw/raw_bike_sharing_systems.csv")
+# ------------------------------------------------------------------------------------
+# Fim do script de limpeza/disputa
+# ------------------------------------------------------------------------------------
+message(" - tarefa11_cidades_15000_20000.png")
+# ====================================================================================
+# File: scripts/1_coleta_dados.R
+# Description: Coleta de dados raw para o projeto
+# ====================================================================================
+# 1. Carregar pacotes necessários
+library(rvest)
+library(tidyverse)
+library(httr)
+library(jsonlite)
+# 2. Diretórios de entrada/saída
+dir.create("data_raw", showWarnings = FALSE)
+# 3. Coleta da tabela de Bike Sharing Systems da Wikipedia
+url_bike_systems <- "https://en.wikipedia.org/wiki/List_of_bicycle-sharing_systems"
+page <- read_html(url_bike_systems)
+bike_table <- page %>%
+html_node("table.wikitable") %>%
+html_table(fill = TRUE)
+write_csv(bike_table, "data_raw/raw_bike_sharing_systems.csv")
+# 4. Importação manual do arquivo World Cities
+# OBSERVAÇÃO: Baixe manualmente o CSV de SimpleMaps (ou outra fonte) e salve como:
+# data_raw/raw_worldcities.csv
+# Para referência, deixamos um stub para leitura caso já exista:
+if (file.exists("data_raw/raw_worldcities.csv")) {
+message("raw_worldcities.csv encontrado em data_raw/.")
+} else {
+message("⚠️ Coloque raw_worldcities.csv (SimpleMaps ou similar) em data_raw/.")
+}
+# 5. Coleta de previsão do tempo via OpenWeather API
+#    – Defina sua API key abaixo (crie conta grátis em openweathermap.org)
+api_key <- "2810b3593651a930239d07e75e3409f7"  # substitua pela sua chave real
+# Lista de cidades desejadas (formato: "Cidade,País")
+cidades <- c("Seoul,KR", "New York,US", "Paris,FR", "Suzhou,CN", "London,UK")
+get_forecast <- function(city) {
+url <- paste0(
+"https://api.openweathermap.org/data/2.5/forecast?q=",
+URLencode(city),
+"&units=metric&appid=", api_key
+)
+resp <- GET(url)
+data <- fromJSON(rawToChar(resp$content), flatten = TRUE)
+df <- data$list %>%
+as_tibble() %>%
+select(
+dt_txt,
+main.temp, main.humidity,
+wind.speed, visibility,
+clouds.all,
+weather
+) %>%
+mutate(city = city)
+return(df)
+}
+all_forecasts <- map_dfr(cidades, get_forecast)
+write_csv(all_forecasts, "data_raw/raw_cities_weather_forecast.csv")
+# 6. Importação manual do dataset Seoul Bike Sharing
+# OBSERVAÇÃO: Baixe manualmente de https://www.kaggle.com/datasets/rtgacusan/seoul-bike-sharing-demand
+# e salve como data_raw/raw_seoul_bike_sharing.csv
+if (file.exists("data_raw/raw_seoul_bike_sharing.csv")) {
+message("raw_seoul_bike_sharing.csv encontrado em data_raw/.")
+} else {
+message("⚠️ Coloque raw_seoul_bike_sharing.csv em data_raw/.")
+}
+# 6. Importação manual do dataset Seoul Bike Sharing
+# OBSERVAÇÃO: Baixe manualmente de https://www.kaggle.com/datasets/rtgacusan/seoul-bike-sharing-demand
+# e salve como data_raw/raw_seoul_bike_sharing.csv
+if (file.exists("data_raw/raw_seoul_bike_sharing.csv")) {
+message("raw_seoul_bike_sharing.csv encontrado em data_raw/.")
+} else {
+message("⚠️ Coloque raw_seoul_bike_sharing.csv em data_raw/.")
+}
+ok
+print(">>> Iniciando coleta de dados brutos...")
+# ------------------------------------------------------------------------------------
+# Fim do script de limpeza/disputa
+# ------------------------------------------------------------------------------------
+getwd()
+list.files()
+# ------------------------------------------------------------------------------------
+# Fim do script de limpeza/disputa
+# ------------------------------------------------------------------------------------
+print(">>> Iniciando coleta de dados brutos...")
+print(">>> Iniciando coleta de dados brutos...")
+source("/cloud/project/scripts/1_coleta_dados.R", echo=TRUE)
+source("/cloud/project/scripts/2_limpeza_disputa.R", echo=TRUE)
+source("/cloud/project/scripts/3_EDA_SQL.R.R", echo=TRUE)
+source("/cloud/project/scripts/4_EDA_ggplot.R", echo=TRUE)

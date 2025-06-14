@@ -1,0 +1,28 @@
+Package: doFuture
+Version: 1.1.0
+Title: Use Foreach to Parallelize via the Future Framework
+Depends: foreach (>= 1.5.0), future (>= 1.49.0)
+Imports: future.apply, globals, iterators, parallel, utils
+Suggests: doRNG (>= 1.8.2), markdown, R.rsp
+VignetteBuilder: R.rsp
+Authors@R: c(person("Henrik", "Bengtsson",
+                    role = c("aut", "cre", "cph"),
+                    email = "henrikb@braju.com",
+                    comment = c(ORCID = "0000-0002-7579-5165")))
+Description: The 'future' package provides a unifying parallelization framework for R that supports many parallel and distributed backends <doi:10.32614/RJ-2021-048>. The 'foreach' package provides a powerful API for iterating over an R expression in parallel. The 'doFuture' package brings the best of the two together. There are two alternative ways to use this package. The recommended approach is to use 'y <- foreach(...) %dofuture% { ... }', which does not require using 'registerDoFuture()' and has many advantages over '%dopar%'. The alternative is the traditional 'foreach' approach by registering the 'foreach' adapter 'registerDoFuture()' and so that 'y <- foreach(...) %dopar% { ... }' runs in parallelizes with the 'future' framework.
+License: LGPL (>= 2.1)
+LazyLoad: TRUE
+URL: https://doFuture.futureverse.org,
+        https://github.com/futureverse/doFuture
+BugReports: https://github.com/futureverse/doFuture/issues
+Language: en-US
+Encoding: UTF-8
+RoxygenNote: 7.3.2
+NeedsCompilation: no
+Packaged: 2025-05-19 05:33:15 UTC; henrik
+Author: Henrik Bengtsson [aut, cre, cph] (ORCID:
+    <https://orcid.org/0000-0002-7579-5165>)
+Maintainer: Henrik Bengtsson <henrikb@braju.com>
+Repository: RSPM
+Date/Publication: 2025-05-22 05:30:02 UTC
+Built: R 4.4.0; ; 2025-05-23 04:14:07 UTC; unix
